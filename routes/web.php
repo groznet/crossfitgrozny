@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -20,4 +21,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/members/{member}', [MemberController::class, 'update'])->name('members.update');
     Route::post('/members/{member}/archive', [MemberController::class, 'archive'])->name('members.archive');
     Route::post('/members/{member}/restore', [MemberController::class, 'restore'])->name('members.restore');
+
+    Route::get('/members/{member}/payments/create', [PaymentController::class, 'create'])->name('payments.create');
+    Route::post('/members/{member}/payments', [PaymentController::class, 'store'])->name('payments.store');
+    Route::get('/payments/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit');
+    Route::put('/payments/{payment}', [PaymentController::class, 'update'])->name('payments.update');
+    Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 });

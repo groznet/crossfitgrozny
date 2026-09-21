@@ -2,8 +2,14 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\NewRequestController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Public\ProfileRequestController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/profile', [ProfileRequestController::class, 'create'])->name('public.profile.create');
+Route::post('/profile', [ProfileRequestController::class, 'store'])->name('public.profile.store');
+Route::get('/profile/thanks', [ProfileRequestController::class, 'thanks'])->name('public.profile.thanks');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('login');
@@ -27,4 +33,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/payments/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit');
     Route::put('/payments/{payment}', [PaymentController::class, 'update'])->name('payments.update');
     Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
+
+    Route::get('/requests', [NewRequestController::class, 'index'])->name('requests.index');
+    Route::get('/requests/{member}/edit', [NewRequestController::class, 'edit'])->name('requests.edit');
+    Route::put('/requests/{member}', [NewRequestController::class, 'approve'])->name('requests.approve');
+    Route::delete('/requests/{member}', [NewRequestController::class, 'reject'])->name('requests.reject');
+    Route::get('/requests/{member}/merge/{target}', [NewRequestController::class, 'confirmMerge'])->name('requests.merge.confirm');
+    Route::post('/requests/{member}/merge/{target}', [NewRequestController::class, 'merge'])->name('requests.merge');
 });

@@ -15,8 +15,12 @@
             </a>
             <nav class="flex items-center gap-4 text-sm">
                 @if (Route::has('requests.index'))
+                    @php($pendingCount = \App\Models\Member::where('status', \App\Enums\MemberStatus::Pending)->count())
                     <a href="{{ route('requests.index') }}" class="text-gray-600 hover:text-gray-900">
                         {{ __('app.nav_requests') }}
+                        @if ($pendingCount > 0)
+                            <span class="ml-1 inline-flex items-center justify-center text-xs bg-red-600 text-white rounded-full w-5 h-5">{{ $pendingCount }}</span>
+                        @endif
                     </a>
                 @endif
                 @if (Route::has('settings.prices.edit'))

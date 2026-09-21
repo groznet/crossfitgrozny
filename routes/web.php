@@ -5,6 +5,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\NewRequestController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Public\ProfileRequestController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/profile', [ProfileRequestController::class, 'create'])->name('public.profile.create');
@@ -40,4 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/requests/{member}', [NewRequestController::class, 'reject'])->name('requests.reject');
     Route::get('/requests/{member}/merge/{target}', [NewRequestController::class, 'confirmMerge'])->name('requests.merge.confirm');
     Route::post('/requests/{member}/merge/{target}', [NewRequestController::class, 'merge'])->name('requests.merge');
+
+    Route::get('/settings/prices', [SettingsController::class, 'edit'])->name('settings.prices.edit');
+    Route::put('/settings/prices', [SettingsController::class, 'update'])->name('settings.prices.update');
 });

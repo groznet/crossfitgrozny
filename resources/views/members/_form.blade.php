@@ -7,7 +7,7 @@
         name="full_name"
         id="full_name"
         value="{{ old('full_name', $member->full_name) }}"
-        class="w-full rounded-lg border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
+        class="w-full rounded-lg border border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
     >
     @error('full_name')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -21,7 +21,7 @@
         name="phone"
         id="phone"
         value="{{ old('phone', $member->phone) }}"
-        class="w-full rounded-lg border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
+        class="w-full rounded-lg border border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
     >
     @error('phone')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -52,7 +52,7 @@
         name="birth_date"
         id="birth_date"
         value="{{ old('birth_date', $member->birth_date?->format('Y-m-d')) }}"
-        class="w-full rounded-lg border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
+        class="w-full rounded-lg border border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
     >
     @error('birth_date')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -85,7 +85,7 @@
         name="note"
         id="note"
         rows="3"
-        class="w-full border rounded-lg py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
+        class="w-full rounded-lg border border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
     >{{ old('note', $member->note) }}</textarea>
     @error('note')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

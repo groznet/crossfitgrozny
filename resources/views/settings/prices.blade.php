@@ -20,7 +20,7 @@
                         id="price_{{ $type->value }}"
                         value="{{ old('prices.'.$type->value, $prices->get($type->value)) }}"
                         min="0"
-                        class="w-full rounded-lg border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
+                        class="w-full rounded-lg border border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
                     >
                 </div>
                 @error('prices.'.$type->value)

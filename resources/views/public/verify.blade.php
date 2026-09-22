@@ -31,7 +31,7 @@
                         name="code"
                         id="code"
                         autofocus
-                        class="w-full rounded-lg border-gray-300 py-3 px-4 text-base text-center tracking-widest focus:border-gray-500 focus:ring-gray-500"
+                        class="w-full rounded-lg border border-gray-300 py-3 px-4 text-base text-center tracking-widest focus:border-gray-500 focus:ring-gray-500"
                     >
                 </div>
                 <button type="submit" class="w-full bg-gray-900 text-white rounded-lg py-3 text-base font-medium hover:bg-gray-800">

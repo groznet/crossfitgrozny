@@ -16,7 +16,7 @@
                 id="login"
                 value="{{ old('login') }}"
                 autofocus
-                class="w-full rounded-lg border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
+                class="w-full rounded-lg border border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
             >
             @error('login')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -29,7 +29,7 @@
                 type="password"
                 name="password"
                 id="password"
-                class="w-full rounded-lg border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
+                class="w-full rounded-lg border border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
             >
             @error('password')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

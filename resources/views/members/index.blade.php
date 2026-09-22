@@ -44,7 +44,7 @@
             name="search"
             value="{{ $search }}"
             placeholder="{{ __('members.search_placeholder') }}"
-            class="w-full rounded-lg border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
+            class="w-full rounded-lg border border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
         >
     </form>
 

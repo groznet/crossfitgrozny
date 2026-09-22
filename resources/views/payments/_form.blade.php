@@ -15,7 +15,7 @@
             name="plan"
             id="plan"
             x-model="plan"
-            class="w-full rounded-lg border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
+            class="w-full rounded-lg border border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
         >
             <option value="">—</option>
             @foreach (\App\Enums\PlanType::cases() as $type)
@@ -35,7 +35,7 @@
             id="amount"
             x-model="amount"
             min="0"
-            class="w-full rounded-lg border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
+            class="w-full rounded-lg border border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
         >
         @error('amount')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -51,7 +51,7 @@
         id="paid_at"
         value="{{ old('paid_at', ($payment->paid_at ?? now())->format('Y-m-d')) }}"
         max="{{ now()->format('Y-m-d') }}"
-        class="w-full rounded-lg border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
+        class="w-full rounded-lg border border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
     >
     @error('paid_at')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

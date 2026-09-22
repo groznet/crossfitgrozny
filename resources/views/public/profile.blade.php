@@ -18,7 +18,7 @@
         @include('members._form')
 
         <button type="submit" class="w-full bg-gray-900 text-white rounded-lg py-3 text-base font-medium hover:bg-gray-800">
-            {{ __('public.send_code') }}
+            {{ __(config('services.smsru.verification_enabled') ? 'public.send_code' : 'public.submit') }}
         </button>
     </form>
 @endsection

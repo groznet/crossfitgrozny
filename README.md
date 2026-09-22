@@ -54,13 +54,17 @@ The seeder also creates 10 demo members spanning every subscription status
 public-form submissions and one archived member, so every screen has
 something to show right after a fresh `migrate --seed`.
 
-### SMS phone verification (public form)
+### SMS phone verification (public form) — currently switched off
 
-The public "join" form at `/profile` requires the visitor to verify their
-phone number via an SMS code before their submission is saved, using
-[sms.ru](https://sms.ru). Configure it in `.env`:
+The public "join" form at `/profile` can require the visitor to verify their
+phone number via an SMS code (via [sms.ru](https://sms.ru)) before their
+submission is saved. **This is switched off by default** (`SMS_VERIFICATION_
+ENABLED=false` in `.env`) — the form saves the submission directly, the same
+way it always has. The code is fully built and tested; flip one setting to
+turn it back on:
 
 ```
+SMS_VERIFICATION_ENABLED=true
 SMSRU_API_ID=your-api-id-from-sms.ru
 SMSRU_TEST_MODE=true
 ```
@@ -71,19 +75,31 @@ SMSRU_TEST_MODE=true
   simulates the send (no real text message, no balance spent) while the rest
   of the flow — code generation, storage, verification — works exactly as in
   production. Set it to `false` only in the real production `.env`.
-- With `SMSRU_API_ID` blank (the default), sending silently fails and is
-  logged to `storage/logs/laravel.log`, but the verification flow still
-  works end-to-end for local testing: read the generated code straight from
-  the cache instead of a text message —
+- With `SMSRU_API_ID` blank, sending silently fails and is logged to
+  `storage/logs/laravel.log`, but the verification flow still works
+  end-to-end for local testing: read the generated code straight from the
+  cache instead of a text message —
   `php artisan tinker --execute 'dd(Cache::get("profile-otp:+79991234567"));'`
   (swap in the phone number you submitted).
 
-How it behaves: a code is valid for 5 minutes and allows 5 wrong guesses
-before it's invalidated; a visitor can request a new code once per 60
-seconds; and sending/resending a code is rate-limited to 3 requests per
-minute per phone number (falling back to per-IP if no phone was given yet),
-to stop someone from running up your SMS balance or spamming a stranger's
-phone.
+How it behaves once enabled: a code is valid for 5 minutes and allows 5
+wrong guesses before it's invalidated; a visitor can request a new code once
+per 60 seconds; and sending/resending a code is rate-limited to 3 requests
+per minute per phone number (falling back to per-IP if no phone was given
+yet), to stop someone from running up your SMS balance or spamming a
+stranger's phone.
+
+### Duplicate pending requests are blocked either way
+
+Regardless of the SMS-verification setting, the public form always rejects a
+phone number that already has an unreviewed (`pending`) submission waiting
+for Adam — otherwise the same person spamming "submit" would pile up
+duplicate entries in his New Requests queue. A phone written as `8 963 ...`
+or `+7 963 ...` is treated as the same number for this check (and
+everywhere else), since `8` is just the domestic dialing prefix for the same
+`+7` country code. This does **not** block a phone that belongs to an
+existing active member — that case is instead surfaced to Adam in New
+Requests as a possible duplicate to merge, per section 5.3 of the brief.
 
 ## Running tests
 

@@ -38,6 +38,7 @@ return [
     'smsru' => [
         'api_id' => env('SMSRU_API_ID'),
         'test_mode' => env('SMSRU_TEST_MODE', true),
+        'verification_enabled' => env('SMS_VERIFICATION_ENABLED', false),
     ],
 
 ];

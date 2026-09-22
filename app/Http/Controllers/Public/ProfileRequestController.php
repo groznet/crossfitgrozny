@@ -21,14 +21,24 @@ class ProfileRequestController extends Controller
     }
 
     /**
-     * A filled honeypot field always looks like a normal "code sent"
-     * response and sends nothing, so a bot never learns which field gave
-     * it away — and we never waste an SMS on it either.
+     * A filled honeypot field always looks like a normal success response
+     * and sends nothing, so a bot never learns which field gave it away —
+     * and we never waste an SMS on it either.
+     *
+     * SMS verification is currently switched off via
+     * `SMS_VERIFICATION_ENABLED` (see .env / README) — the submission is
+     * saved directly instead of going through the code step. The OtpService/
+     * SmsRuGateway code is left in place so it's a one-line flip to turn
+     * back on.
      */
     public function sendCode(Request $request, PhotoUploadService $photos, OtpService $otp): View|RedirectResponse
     {
+        $verificationEnabled = config('services.smsru.verification_enabled');
+
         if ($request->filled('company')) {
-            return view('public.verify', ['phone' => $request->string('phone')->toString() ?: '—']);
+            return $verificationEnabled
+                ? view('public.verify', ['phone' => $request->string('phone')->toString() ?: '—'])
+                : redirect()->route('public.profile.thanks');
         }
 
         if ($request->filled('phone')) {
@@ -41,6 +51,12 @@ class ProfileRequestController extends Controller
             $data['photo_url'] = $photos->store($request->file('photo'));
         }
         unset($data['photo']);
+
+        if (! $verificationEnabled) {
+            Member::create([...$data, 'status' => MemberStatus::Pending]);
+
+            return redirect()->route('public.profile.thanks');
+        }
 
         $otp->send($data['phone'], $data, $request->ip());
 

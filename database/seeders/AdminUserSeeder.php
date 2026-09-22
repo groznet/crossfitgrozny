@@ -23,7 +23,7 @@ class AdminUserSeeder extends Seeder
         User::updateOrCreate(
             ['username' => 'adam'],
             [
-                'name' => 'Адам',
+                'name' => 'Магомед',
                 'phone' => '+79639892011',
                 'email' => 'adam@crossfitgrozny.local',
                 'password' => Hash::make(self::DEFAULT_PASSWORD),

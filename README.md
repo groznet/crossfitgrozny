@@ -116,7 +116,7 @@ the session (`profile_captcha_answer`), never exposed to the client.
 Two more public, no-login pages exist beyond the join form:
 
 - **`/m/{token}`** — a read-only page showing one member's own name, photo,
-  and current subscription status, plus a "Написать Адаму" WhatsApp button
+  and current subscription status, plus a "Написать Магомеду" WhatsApp button
   (using Adam's own phone number, per section 3 of the brief — this is the
   first place that number is actually surfaced to a member). There's no
   login and no lookup by name/phone; the only way to reach a specific

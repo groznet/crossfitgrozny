@@ -85,7 +85,7 @@
         name="note"
         id="note"
         rows="3"
-        class="w-full rounded-lg border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
+        class="w-full border rounded-lg py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
     >{{ old('note', $member->note) }}</textarea>
     @error('note')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

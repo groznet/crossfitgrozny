@@ -9,7 +9,15 @@ use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/profile', [ProfileRequestController::class, 'create'])->name('public.profile.create');
-Route::post('/profile', [ProfileRequestController::class, 'store'])->name('public.profile.store');
+Route::post('/profile/send-code', [ProfileRequestController::class, 'sendCode'])
+    ->middleware('throttle:otp-send')
+    ->name('public.profile.send-code');
+Route::post('/profile/resend-code', [ProfileRequestController::class, 'resendCode'])
+    ->middleware('throttle:otp-send')
+    ->name('public.profile.resend-code');
+Route::post('/profile/verify-code', [ProfileRequestController::class, 'verifyCode'])
+    ->middleware('throttle:10,1')
+    ->name('public.profile.verify-code');
 Route::get('/profile/thanks', [ProfileRequestController::class, 'thanks'])->name('public.profile.thanks');
 
 Route::middleware('guest')->group(function () {

@@ -54,6 +54,37 @@ The seeder also creates 10 demo members spanning every subscription status
 public-form submissions and one archived member, so every screen has
 something to show right after a fresh `migrate --seed`.
 
+### SMS phone verification (public form)
+
+The public "join" form at `/profile` requires the visitor to verify their
+phone number via an SMS code before their submission is saved, using
+[sms.ru](https://sms.ru). Configure it in `.env`:
+
+```
+SMSRU_API_ID=your-api-id-from-sms.ru
+SMSRU_TEST_MODE=true
+```
+
+- Get `SMSRU_API_ID` from your sms.ru account's home page. **Never commit a
+  real key** — it stays in `.env` only (already git-ignored).
+- Leave `SMSRU_TEST_MODE=true` for local development and staging: sms.ru
+  simulates the send (no real text message, no balance spent) while the rest
+  of the flow — code generation, storage, verification — works exactly as in
+  production. Set it to `false` only in the real production `.env`.
+- With `SMSRU_API_ID` blank (the default), sending silently fails and is
+  logged to `storage/logs/laravel.log`, but the verification flow still
+  works end-to-end for local testing: read the generated code straight from
+  the cache instead of a text message —
+  `php artisan tinker --execute 'dd(Cache::get("profile-otp:+79991234567"));'`
+  (swap in the phone number you submitted).
+
+How it behaves: a code is valid for 5 minutes and allows 5 wrong guesses
+before it's invalidated; a visitor can request a new code once per 60
+seconds; and sending/resending a code is rate-limited to 3 requests per
+minute per phone number (falling back to per-IP if no phone was given yet),
+to stop someone from running up your SMS balance or spamming a stranger's
+phone.
+
 ## Running tests
 
 ```bash
@@ -136,3 +167,15 @@ chose the simplest option and records it here:
 - **The admin account reuses Laravel's stock `users` table**, with
   `username` and `phone` columns added, rather than pulling in a full auth
   starter kit — there's only ever one admin in this MVP.
+- **A photo uploaded during the public form is stored immediately**, before
+  phone verification completes, so its path can be stashed alongside the
+  rest of the pending submission (an `UploadedFile` can't be kept across
+  requests any other way). If the visitor never verifies their code, that
+  photo file is orphaned on disk — the submission never becomes a `Member`
+  row, but the file isn't cleaned up automatically. Low-volume/low-cost
+  enough to leave as a manual `storage/app/public/photos` cleanup if it ever
+  matters.
+- **The OTP code, its expiry, and the stashed form data all live in
+  Laravel's cache** (`profile-otp:{phone}`, 5-minute TTL), not a database
+  table — there's no audit trail of verification attempts, which is fine for
+  a low-volume, low-stakes intake form.

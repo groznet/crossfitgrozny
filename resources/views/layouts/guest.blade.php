@@ -8,7 +8,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-gray-50 text-gray-900 min-h-screen flex items-center justify-center px-4">
-    <div class="w-full max-w-sm py-10">
+    <div class="w-full @yield('container-class', 'max-w-sm') py-10">
         @yield('content')
     </div>
 </body>

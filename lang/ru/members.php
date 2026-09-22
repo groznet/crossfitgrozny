@@ -43,6 +43,7 @@ return [
     'archive' => 'В архив',
     'restore' => 'Восстановить',
     'archived_notice' => 'Этот участник в архиве.',
+    'public_link_label' => 'Личная ссылка участника',
     'payment_history' => 'История оплат',
     'no_payments' => 'Оплат ещё не было.',
     'updated' => 'Данные участника обновлены.',

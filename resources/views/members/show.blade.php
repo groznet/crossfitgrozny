@@ -49,6 +49,28 @@
             @endif
         </dl>
 
+        <div class="mb-4" x-data="{ copied: false }">
+            <label class="block text-sm text-gray-500 mb-1">{{ __('members.public_link_label') }}</label>
+            <div class="flex gap-2">
+                <input
+                    type="text"
+                    readonly
+                    value="{{ $member->publicUrl() }}"
+                    x-ref="publicLink"
+                    onclick="this.select()"
+                    class="flex-1 min-w-0 rounded-lg border border-gray-300 py-2 px-3 text-sm text-gray-600 bg-gray-50"
+                >
+                <button
+                    type="button"
+                    @click="navigator.clipboard.writeText($refs.publicLink.value); copied = true; setTimeout(() => copied = false, 2000)"
+                    class="shrink-0 border border-gray-300 rounded-lg px-3 text-sm font-medium hover:bg-gray-50"
+                >
+                    <span x-show="!copied">{{ __('app.copy') }}</span>
+                    <span x-show="copied">{{ __('app.copied') }}</span>
+                </button>
+            </div>
+        </div>
+
         <div class="grid grid-cols-2 gap-2">
             @if (Route::has('payments.create'))
                 <a href="{{ route('payments.create', $member) }}" class="col-span-2 bg-gray-900 text-white rounded-lg py-3 text-center text-sm font-medium hover:bg-gray-800">

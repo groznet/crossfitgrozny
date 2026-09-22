@@ -17,4 +17,9 @@ class PhoneNumber
 
         return '+'.$digits;
     }
+
+    public static function toWhatsAppUrl(string $phone): string
+    {
+        return 'https://wa.me/'.preg_replace('/\D/', '', $phone);
+    }
 }

@@ -22,4 +22,17 @@ return [
     'code_expired' => 'Срок действия кода истёк. Заполните форму заново.',
     'too_many_attempts' => 'Слишком много попыток. Заполните форму заново.',
     'start_over' => 'Заполнить заново',
+
+    // Member's own read-only status page (/m/{token})
+    'member_profile_title' => 'Ваш профиль',
+    'member_pending_notice' => 'Ваша заявка отправлена и ожидает подтверждения от Адама.',
+    'member_archived_notice' => 'Вы больше не в списке активных участников. Если это ошибка — напишите Адаму.',
+    'contact_adam' => 'Написать Адаму',
+
+    // Public community directory (/community)
+    'community_title' => 'Участники CrossFit',
+    'community_intro' => 'Наша команда 💪',
+    'community_empty' => 'Пока здесь никого нет.',
+    'community_join_cta' => 'Хотите присоединиться?',
+    'community_join_button' => 'Заполнить анкету',
 ];

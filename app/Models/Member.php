@@ -5,12 +5,14 @@ namespace App\Models;
 use App\Enums\MemberStatus;
 use App\Enums\PreferredTime;
 use App\Enums\SubscriptionStatus;
+use App\Support\PhoneNumber;
 use Database\Factories\MemberFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 
 class Member extends Model
 {
@@ -26,6 +28,13 @@ class Member extends Model
         'note',
         'status',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Member $member) {
+            $member->public_token ??= Str::random(32);
+        });
+    }
 
     protected function casts(): array
     {
@@ -67,6 +76,16 @@ class Member extends Model
 
     public function whatsappUrl(): string
     {
-        return 'https://wa.me/'.preg_replace('/\D/', '', $this->phone);
+        return PhoneNumber::toWhatsAppUrl($this->phone);
+    }
+
+    /**
+     * The unguessable link a member can use to view their own status —
+     * nothing stops them sharing it, but there's no directory listing or
+     * other way to discover another member's link.
+     */
+    public function publicUrl(): string
+    {
+        return route('public.member.show', $this->public_token);
     }
 }

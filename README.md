@@ -111,6 +111,33 @@ written specifically to scrape and solve simple sums would get past it. The
 correct answer is generated fresh per page load and stored server-side in
 the session (`profile_captcha_answer`), never exposed to the client.
 
+### A member's own status page, and a public community directory
+
+Two more public, no-login pages exist beyond the join form:
+
+- **`/m/{token}`** — a read-only page showing one member's own name, photo,
+  and current subscription status, plus a "Написать Адаму" WhatsApp button
+  (using Adam's own phone number, per section 3 of the brief — this is the
+  first place that number is actually surfaced to a member). There's no
+  login and no lookup by name/phone; the only way to reach a specific
+  member's page is to already have their link. Every member gets a random,
+  unguessable 32-character `public_token` automatically the moment their
+  row is created (`Member::booted()`), and `Member::publicUrl()` builds the
+  full link from it. Adam can copy a member's link from their admin page
+  (`members.show`) — a "Личная ссылка участника" field with a copy button —
+  to send it to them once they're approved. There is deliberately no
+  "browse all members and pick one" page anywhere that links out to
+  individual `/m/{token}` pages — that would let anyone crawl and discover
+  every member's supposedly-private link, defeating the point.
+- **`/community`** — a public grid of every currently-active member's name
+  and photo (a colorful initial avatar if they have no photo), with a "join
+  us" call to action at the bottom linking to `/profile`. This page shows
+  **no subscription/payment status at all**, on purpose: it's a community
+  showcase for a Russian-language gym app, not a "who's paid" leaderboard —
+  publicly broadcasting who has or hasn't paid felt like the wrong call
+  even though the brief doesn't say either way. Pending and archived
+  members never appear here.
+
 ## Running tests
 
 ```bash

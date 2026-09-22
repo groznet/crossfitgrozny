@@ -4,9 +4,14 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\NewRequestController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Public\CommunityController;
+use App\Http\Controllers\Public\MemberProfileController;
 use App\Http\Controllers\Public\ProfileRequestController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/community', [CommunityController::class, 'index'])->name('public.community.index');
+Route::get('/m/{member:public_token}', [MemberProfileController::class, 'show'])->name('public.member.show');
 
 Route::get('/profile', [ProfileRequestController::class, 'create'])->name('public.profile.create');
 Route::post('/profile/send-code', [ProfileRequestController::class, 'sendCode'])

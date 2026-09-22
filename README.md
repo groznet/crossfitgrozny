@@ -101,6 +101,16 @@ everywhere else), since `8` is just the domestic dialing prefix for the same
 existing active member — that case is instead surfaced to Adam in New
 Requests as a possible duplicate to merge, per section 5.3 of the brief.
 
+### Math challenge on the public form
+
+The public form also shows a plain-text arithmetic question (e.g. "сколько
+будет 4 + 7?") that must be answered correctly before it submits, on top of
+the invisible honeypot field. Like the honeypot, this is a lightweight
+deterrent against generic/naive spam scripts, not a real CAPTCHA — a bot
+written specifically to scrape and solve simple sums would get past it. The
+correct answer is generated fresh per page load and stored server-side in
+the session (`profile_captcha_answer`), never exposed to the client.
+
 ## Running tests
 
 ```bash

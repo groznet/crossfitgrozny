@@ -17,7 +17,11 @@ class ProfileRequestController extends Controller
 {
     public function create(): View
     {
-        return view('public.profile', ['member' => new Member]);
+        $a = random_int(1, 9);
+        $b = random_int(1, 9);
+        session(['profile_captcha_answer' => $a + $b]);
+
+        return view('public.profile', ['member' => new Member, 'captchaA' => $a, 'captchaB' => $b]);
     }
 
     /**

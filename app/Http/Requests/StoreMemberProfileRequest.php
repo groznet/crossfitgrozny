@@ -23,6 +23,12 @@ class StoreMemberProfileRequest extends UpdateMemberRequest
             }
         };
 
+        $rules['captcha_answer'] = ['required', function (string $attribute, mixed $value, Closure $fail) {
+            if ((int) $value !== (int) session('profile_captcha_answer')) {
+                $fail(__('public.captcha_wrong'));
+            }
+        }];
+
         return $rules;
     }
 }

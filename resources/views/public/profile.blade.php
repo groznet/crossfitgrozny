@@ -17,6 +17,22 @@
 
         @include('members._form')
 
+        <div>
+            <label for="captcha_answer" class="block text-sm font-medium mb-1">
+                {{ __('public.captcha_question', ['a' => $captchaA, 'b' => $captchaB]) }}
+            </label>
+            <input
+                type="number"
+                name="captcha_answer"
+                id="captcha_answer"
+                inputmode="numeric"
+                class="w-full rounded-lg border border-gray-300 py-3 px-4 text-base focus:border-gray-500 focus:ring-gray-500"
+            >
+            @error('captcha_answer')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
+
         <button type="submit" class="w-full bg-gray-900 text-white rounded-lg py-3 text-base font-medium hover:bg-gray-800">
             {{ __(config('services.smsru.verification_enabled') ? 'public.send_code' : 'public.submit') }}
         </button>

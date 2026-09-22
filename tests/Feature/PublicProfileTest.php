@@ -7,11 +7,14 @@ use App\Models\Member;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class PublicProfileTest extends TestCase
 {
     use RefreshDatabase;
+
+    private const CAPTCHA_ANSWER = 8;
 
     protected function setUp(): void
     {
@@ -25,11 +28,22 @@ class PublicProfileTest extends TestCase
         return Cache::get("profile-otp:{$phone}");
     }
 
+    /**
+     * Post to the public "send code"/submit endpoint with a valid math
+     * challenge answer already in session, so tests can focus on the
+     * behaviour they're actually checking.
+     */
+    private function submitProfile(array $data): TestResponse
+    {
+        return $this->withSession(['profile_captcha_answer' => self::CAPTCHA_ANSWER])
+            ->post(route('public.profile.send-code'), [...$data, 'captcha_answer' => self::CAPTCHA_ANSWER]);
+    }
+
     // -- Default behaviour: SMS verification switched off --------------
 
     public function test_visitor_can_submit_a_profile_request_directly(): void
     {
-        $response = $this->post(route('public.profile.send-code'), [
+        $response = $this->submitProfile([
             'full_name' => 'Новый Участник',
             'phone' => '+7 963 123-45-67',
         ]);
@@ -44,7 +58,7 @@ class PublicProfileTest extends TestCase
 
     public function test_filled_honeypot_pretends_success_and_saves_nothing(): void
     {
-        $response = $this->post(route('public.profile.send-code'), [
+        $response = $this->submitProfile([
             'full_name' => 'Bot',
             'phone' => '+79630000000',
             'company' => 'Acme Corp',
@@ -57,16 +71,29 @@ class PublicProfileTest extends TestCase
 
     public function test_full_name_and_phone_are_required(): void
     {
-        $response = $this->post(route('public.profile.send-code'), []);
+        $response = $this->submitProfile([]);
 
         $response->assertSessionHasErrors(['full_name', 'phone']);
+    }
+
+    public function test_wrong_captcha_answer_is_rejected(): void
+    {
+        $response = $this->withSession(['profile_captcha_answer' => self::CAPTCHA_ANSWER])
+            ->post(route('public.profile.send-code'), [
+                'full_name' => 'Новый Участник',
+                'phone' => '+79631234567',
+                'captcha_answer' => self::CAPTCHA_ANSWER + 1,
+            ]);
+
+        $response->assertSessionHasErrors('captcha_answer');
+        $this->assertDatabaseCount('members', 0);
     }
 
     public function test_a_phone_with_a_pending_request_is_rejected(): void
     {
         Member::factory()->pending()->create(['phone' => '+79631234567']);
 
-        $response = $this->post(route('public.profile.send-code'), [
+        $response = $this->submitProfile([
             'full_name' => 'Другой Человек',
             'phone' => '+79631234567',
         ]);
@@ -79,7 +106,7 @@ class PublicProfileTest extends TestCase
     {
         Member::factory()->pending()->create(['phone' => '+79631234567']);
 
-        $response = $this->post(route('public.profile.send-code'), [
+        $response = $this->submitProfile([
             'full_name' => 'Другой Человек',
             'phone' => '8 963 123-45-67',
         ]);
@@ -94,7 +121,7 @@ class PublicProfileTest extends TestCase
         // is instead surfaced to Adam as a possible duplicate to merge.
         Member::factory()->create(['phone' => '+79631234567']);
 
-        $response = $this->post(route('public.profile.send-code'), [
+        $response = $this->submitProfile([
             'full_name' => 'Другой Человек',
             'phone' => '+79631234567',
         ]);
@@ -109,7 +136,7 @@ class PublicProfileTest extends TestCase
     {
         config(['services.smsru.verification_enabled' => true]);
 
-        $sendResponse = $this->post(route('public.profile.send-code'), [
+        $sendResponse = $this->submitProfile([
             'full_name' => 'Новый Участник',
             'phone' => '+7 963 123-45-67',
         ]);
@@ -138,7 +165,7 @@ class PublicProfileTest extends TestCase
     {
         config(['services.smsru.verification_enabled' => true]);
 
-        $this->post(route('public.profile.send-code'), [
+        $this->submitProfile([
             'full_name' => 'Иван Иванов',
             'phone' => '+79997654321',
         ]);
@@ -159,7 +186,7 @@ class PublicProfileTest extends TestCase
     {
         config(['services.smsru.verification_enabled' => true]);
 
-        $this->post(route('public.profile.send-code'), [
+        $this->submitProfile([
             'full_name' => 'Иван Иванов',
             'phone' => '+79997654321',
         ]);
@@ -185,7 +212,7 @@ class PublicProfileTest extends TestCase
     {
         config(['services.smsru.verification_enabled' => true]);
 
-        $this->post(route('public.profile.send-code'), [
+        $this->submitProfile([
             'full_name' => 'Иван Иванов',
             'phone' => '+79997654321',
         ]);
@@ -204,7 +231,7 @@ class PublicProfileTest extends TestCase
     {
         config(['services.smsru.verification_enabled' => true]);
 
-        $response = $this->post(route('public.profile.send-code'), [
+        $response = $this->submitProfile([
             'full_name' => 'Bot',
             'phone' => '+79630000000',
             'company' => 'Acme Corp',
@@ -223,9 +250,9 @@ class PublicProfileTest extends TestCase
         $payload = ['full_name' => 'Иван Иванов', 'phone' => '+79997654321'];
 
         for ($i = 0; $i < 3; $i++) {
-            $this->post(route('public.profile.send-code'), $payload)->assertOk();
+            $this->submitProfile($payload)->assertOk();
         }
 
-        $this->post(route('public.profile.send-code'), $payload)->assertStatus(429);
+        $this->submitProfile($payload)->assertStatus(429);
     }
 }

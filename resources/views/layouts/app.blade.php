@@ -6,6 +6,7 @@
     <title>@yield('title', __('app.app_name'))</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" referrerpolicy="no-referrer">
 </head>
 <body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
     <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
@@ -30,7 +31,9 @@
                 @endif
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="text-gray-600 hover:text-gray-900">{{ __('app.logout') }}</button>
+                    <button type="submit" class="text-gray-600 hover:text-gray-900 p-2 -m-2" title="{{ __('app.logout') }}" aria-label="{{ __('app.logout') }}">
+                        <i class="fa-solid fa-right-from-bracket text-lg" aria-hidden="true"></i>
+                    </button>
                 </form>
             </nav>
         </div>

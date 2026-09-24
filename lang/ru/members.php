@@ -44,6 +44,7 @@ return [
     'restore' => 'Восстановить',
     'archived_notice' => 'Этот участник в архиве.',
     'public_link_label' => 'Личная ссылка участника',
+    'public_profile_link' => 'Публичная страница',
     'payment_history' => 'История оплат',
     'no_payments' => 'Оплат ещё не было.',
     'updated' => 'Данные участника обновлены.',

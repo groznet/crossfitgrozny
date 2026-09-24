@@ -18,7 +18,7 @@ class CommunityController extends Controller
     {
         $members = Member::where('status', MemberStatus::Active)
             ->orderBy('full_name')
-            ->get(['id', 'full_name', 'photo_url']);
+            ->get(['id', 'full_name', 'photo_url', 'username']);
 
         return view('public.community', compact('members'));
     }

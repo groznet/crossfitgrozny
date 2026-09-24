@@ -136,7 +136,16 @@ Two more public, no-login pages exist beyond the join form:
   showcase for a Russian-language gym app, not a "who's paid" leaderboard —
   publicly broadcasting who has or hasn't paid felt like the wrong call
   even though the brief doesn't say either way. Pending and archived
-  members never appear here.
+  members never appear here. Each card links to that member's public
+  profile (below).
+- **`/u/{username}`** (or **`/u/{id}`** until a username is set) — a short,
+  shareable public profile with only the member's name, photo, and "member
+  since" month. Like `/community`, it never shows payment status, which is
+  why it's safe for this address to be short and guessable. The member picks
+  their username themselves on their private `/m/{token}` page (Latin
+  letters, digits, `_`; 3–30 characters; not all digits so it can't clash
+  with an id; unique, case-insensitive). Once a username is set, `/u/{id}`
+  redirects to it. Only active members have a public profile.
 
 ## Running tests
 
@@ -149,13 +158,35 @@ and never touch your local MySQL data.
 
 ## Deploying to Timeweb
 
-1. Upload the repository to the server (via git or SFTP), excluding
-   `vendor/`, `node_modules/`, and `.env`.
-2. On the server, install PHP dependencies for production:
+Prerequisites on the server: PHP 8.3+ with the **`gd`** and **`exif`**
+extensions enabled (the `gd`/`exif` functions in
+`app/Services/PhotoUploadService.php` use them directly to resize and
+re-encode member photos — there's no Composer package covering this, so
+check the hosting panel's PHP extension list if uploads ever fail).
+
+1. Clone the repository into the project directory on the server (SSH):
+   ```bash
+   git clone https://github.com/groznet/crossfitgrozny.git .
+   ```
+   (run inside the empty directory the hosting panel created for the site;
+   for updates later, `git pull` from the same directory).
+2. Install PHP dependencies for production:
    ```bash
    composer install --no-dev --optimize-autoloader
    ```
-3. Create `.env` on the server (copy from `.env.example`) and set:
+3. Many shared-hosting panels (including Timeweb) fix a site's document
+   root to a folder literally named `public_html`, which can't be pointed
+   at Laravel's `public/` directory directly. Rather than renaming
+   `public/` (which would fight with future `git pull`s), symlink it:
+   ```bash
+   ln -s public public_html
+   ```
+   `bootstrap/app.php` auto-detects whichever of `public_html`/`public`
+   exists and points Laravel's public-path resolution at it, so
+   `storage:link`, asset URLs, etc. all resolve correctly either way. Then
+   set the site's document root, in the hosting panel, to this
+   `public_html` folder.
+4. Create `.env` on the server (copy from `.env.example`) and set:
    - `APP_ENV=production`
    - `APP_DEBUG=false`
    - `APP_URL=https://anydomain.ru` (or `https://crossfitgrozny.ru` once the
@@ -165,7 +196,10 @@ and never touch your local MySQL data.
    - `APP_KEY` — generate one if you didn't copy an existing key:
      `php artisan key:generate --force`
    - `DB_*` — the MySQL credentials Timeweb provides for your database
-4. Run migrations and seed the initial admin account and prices:
+     (double-check `DB_USERNAME` and `DB_HOST` in the hosting panel's
+     database page — the username isn't always identical to the database
+     name, and the host isn't always `localhost`)
+5. Run migrations and seed the initial admin account and prices:
    ```bash
    php artisan migrate --force
    php artisan db:seed --class=AdminUserSeeder --force
@@ -173,19 +207,32 @@ and never touch your local MySQL data.
    ```
    (Skip `MemberDemoSeeder` in production — it's only for local visual
    testing.)
-5. Link storage so uploaded member photos are servable:
+6. Link storage so uploaded member photos are servable:
    ```bash
    php artisan storage:link
    ```
-6. Cache config/routes/views for performance:
+7. Cache config/routes/views for performance:
    ```bash
    php artisan config:cache
    php artisan route:cache
    php artisan view:cache
    ```
-7. Point the web server's document root at the `public/` directory.
-8. Make sure the PHP-FPM user can write to `storage/` and
-   `bootstrap/cache/`.
+8. Make sure the PHP-FPM user can write to `storage/` (including
+   `storage/app/public/photos`) and `bootstrap/cache/`:
+   ```bash
+   chmod -R 775 storage bootstrap/cache
+   ```
+
+### Updating a live deployment
+
+```bash
+git pull
+composer install --no-dev --optimize-autoloader   # only if composer.lock changed
+php artisan migrate --force                        # only if new migrations
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
 
 ## Assumptions
 

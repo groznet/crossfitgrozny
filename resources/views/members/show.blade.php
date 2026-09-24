@@ -69,6 +69,11 @@
                     <span x-show="copied">{{ __('app.copied') }}</span>
                 </button>
             </div>
+            @if ($member->status === \App\Enums\MemberStatus::Active)
+                <a href="{{ $member->profileUrl() }}" target="_blank" class="inline-block text-sm text-gray-600 underline mt-2">
+                    {{ __('members.public_profile_link') }}
+                </a>
+            @endif
         </div>
 
         <div class="grid grid-cols-2 gap-2">

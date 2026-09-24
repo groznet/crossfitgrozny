@@ -23,4 +23,11 @@ return [
     'back' => 'Назад',
     'copy' => 'Копировать',
     'copied' => 'Скопировано!',
+
+    'pwa_install_title' => 'Установите приложение',
+    'pwa_install_text' => 'Добавьте CrossFit Grozny на главный экран для быстрого доступа.',
+    'pwa_install_button' => 'Установить',
+    'pwa_ios_step_share' => 'Нажмите «Поделиться»',
+    'pwa_ios_step_add' => 'и выберите «На экран „Домой“».',
+    'pwa_dismiss' => 'Закрыть',
 ];

@@ -7,11 +7,16 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Public\CommunityController;
 use App\Http\Controllers\Public\MemberProfileController;
 use App\Http\Controllers\Public\ProfileRequestController;
+use App\Http\Controllers\Public\PublicProfileController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/community', [CommunityController::class, 'index'])->name('public.community.index');
 Route::get('/m/{member:public_token}', [MemberProfileController::class, 'show'])->name('public.member.show');
+Route::post('/m/{member:public_token}/username', [PublicProfileController::class, 'updateUsername'])
+    ->middleware('throttle:10,1')
+    ->name('public.member.username');
+Route::get('/u/{handle}', [PublicProfileController::class, 'show'])->name('public.profile.show');
 
 Route::get('/profile', [ProfileRequestController::class, 'create'])->name('public.profile.create');
 Route::post('/profile/send-code', [ProfileRequestController::class, 'sendCode'])

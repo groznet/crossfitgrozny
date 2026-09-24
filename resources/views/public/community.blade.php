@@ -29,7 +29,7 @@
     @else
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-10">
             @foreach ($members as $member)
-                <div class="bg-white rounded-xl shadow-sm p-4 text-center">
+                <a href="{{ $member->profileUrl() }}" class="block bg-white rounded-xl shadow-sm p-4 text-center hover:bg-gray-50">
                     @if ($member->photo_url)
                         <img src="{{ Storage::url($member->photo_url) }}" alt="" class="w-16 h-16 rounded-full object-cover mx-auto mb-2">
                     @else
@@ -38,7 +38,7 @@
                         </div>
                     @endif
                     <div class="text-sm font-medium truncate">{{ $member->full_name }}</div>
-                </div>
+                </a>
             @endforeach
         </div>
     @endif

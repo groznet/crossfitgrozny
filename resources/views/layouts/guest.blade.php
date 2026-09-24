@@ -4,11 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>@yield('title', __('app.app_name'))</title>
+    @include('partials.pwa-head')
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>[x-cloak] { display: none !important; }</style>
 </head>
 <body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+    @include('partials.pwa-install-banner')
+
     <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between relative" x-data="{ open: false }">
             <a href="{{ route('public.community.index') }}" class="font-semibold text-lg">

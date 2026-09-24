@@ -55,6 +55,20 @@ class Member extends Model
         return $this->hasOne(Payment::class)->latestOfMany(['paid_at', 'id']);
     }
 
+    public function firstPayment(): HasOne
+    {
+        return $this->hasOne(Payment::class)->oldestOfMany(['paid_at', 'id']);
+    }
+
+    /**
+     * When the member joined: their first payment date, or when their row
+     * was created if they haven't paid yet. Never moves on profile edits.
+     */
+    protected function joinedAt(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->firstPayment?->paid_at ?? $this->created_at);
+    }
+
     protected function subscriptionStatus(): Attribute
     {
         return Attribute::make(get: function () {
@@ -87,5 +101,14 @@ class Member extends Model
     public function publicUrl(): string
     {
         return route('public.member.show', $this->public_token);
+    }
+
+    /**
+     * The short, shareable public profile link — /u/{username} once the
+     * member has picked one, /u/{id} until then.
+     */
+    public function profileUrl(): string
+    {
+        return route('public.profile.show', $this->username ?? $this->id);
     }
 }

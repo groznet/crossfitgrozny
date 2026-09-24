@@ -28,6 +28,15 @@ return [
     'member_pending_notice' => 'Ваша заявка отправлена и ожидает подтверждения от Магомеда.',
     'member_archived_notice' => 'Вы больше не в списке активных участников. Если это ошибка — напишите Магомеду.',
     'contact_adam' => 'Написать Магомеду',
+    'username_label' => 'Ваша публичная страница',
+    'username_hint' => 'Латинские буквы, цифры и _, от 3 до 30 символов.',
+    'username_save' => 'Сохранить',
+    'username_saved' => 'Адрес страницы сохранён.',
+    'username_format' => 'Только латинские буквы, цифры и _ (не только цифры).',
+    'username_taken' => 'Этот адрес уже занят. Попробуйте другой.',
+
+    // Member's public profile (/u/{username})
+    'member_since' => 'В команде с :date',
 
     // Public community directory (/community)
     'community_title' => 'Участники CrossFit',

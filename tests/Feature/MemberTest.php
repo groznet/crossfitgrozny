@@ -15,9 +15,9 @@ class MemberTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_guest_is_redirected_to_login(): void
+    public function test_guest_is_redirected_to_community(): void
     {
-        $this->get(route('members.index'))->assertRedirect(route('login'));
+        $this->get(route('members.index'))->assertRedirect(route('public.community.index'));
     }
 
     public function test_list_shows_only_active_members_by_default(): void
@@ -108,5 +108,17 @@ class MemberTest extends TestCase
         $this->get(route('members.show', $member))->assertOk();
 
         $this->assertNotNull($member->fresh()->public_token);
+    }
+
+    public function test_home_sends_guests_to_community(): void
+    {
+        $this->get('/')->assertRedirect(route('public.community.index'));
+    }
+
+    public function test_home_sends_admin_to_member_list(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this->get('/')->assertRedirect(route('members.index'));
     }
 }

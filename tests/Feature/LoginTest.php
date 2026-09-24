@@ -66,8 +66,8 @@ class LoginTest extends TestCase
         $this->assertGuest();
     }
 
-    public function test_guest_is_redirected_to_login_from_protected_route(): void
+    public function test_guest_is_redirected_to_community_from_protected_route(): void
     {
-        $this->post(route('logout'))->assertRedirect(route('login'));
+        $this->post(route('logout'))->assertRedirect(route('public.community.index'));
     }
 }

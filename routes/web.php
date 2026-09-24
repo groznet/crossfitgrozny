@@ -11,6 +11,8 @@ use App\Http\Controllers\Public\PublicProfileController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/', fn () => redirect()->route(auth()->check() ? 'members.index' : 'public.community.index'));
+
 Route::get('/community', [CommunityController::class, 'index'])->name('public.community.index');
 Route::get('/m/{member:public_token}', [MemberProfileController::class, 'show'])->name('public.member.show');
 Route::post('/m/{member:public_token}/username', [PublicProfileController::class, 'updateUsername'])
@@ -37,8 +39,6 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
-
-    Route::get('/', fn () => redirect()->route('members.index'));
 
     Route::get('/members', [MemberController::class, 'index'])->name('members.index');
     Route::get('/members/{member}', [MemberController::class, 'show'])->name('members.show');

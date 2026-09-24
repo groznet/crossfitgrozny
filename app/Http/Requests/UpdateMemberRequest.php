@@ -34,6 +34,7 @@ class UpdateMemberRequest extends FormRequest
             'full_name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:32'],
             'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'remove_photo' => ['nullable', 'boolean'],
             'birth_date' => ['nullable', 'date', 'before:today'],
             'preferred_time' => ['nullable', 'in:day,evening'],
             'note' => ['nullable', 'string', 'max:1000'],

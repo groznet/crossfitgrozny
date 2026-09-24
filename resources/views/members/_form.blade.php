@@ -31,7 +31,15 @@
 <div>
     <label for="photo" class="block text-sm font-medium mb-1">{{ __('members.photo') }}</label>
     @if ($member->photo_url)
-        <img src="{{ Storage::url($member->photo_url) }}" alt="" class="w-16 h-16 rounded-full object-cover mb-2">
+        <div class="flex items-center gap-4 mb-2">
+            <img src="{{ Storage::url($member->photo_url) }}" alt="" class="w-16 h-16 rounded-full object-cover">
+            @if ($canRemovePhoto ?? false)
+                <label class="flex items-center gap-2 text-sm text-gray-600 py-2">
+                    <input type="checkbox" name="remove_photo" value="1" class="w-5 h-5 rounded border-gray-300" @checked(old('remove_photo'))>
+                    {{ __('members.remove_photo') }}
+                </label>
+            @endif
+        </div>
     @endif
     <input
         type="file"

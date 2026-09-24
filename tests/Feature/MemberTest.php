@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\PaymentService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class MemberTest extends TestCase
@@ -120,5 +121,48 @@ class MemberTest extends TestCase
         $this->actingAs(User::factory()->create());
 
         $this->get('/')->assertRedirect(route('members.index'));
+    }
+
+    public function test_edit_form_offers_to_remove_an_existing_photo(): void
+    {
+        $this->actingAs(User::factory()->create());
+        $member = Member::factory()->create(['photo_url' => 'photos/current.jpg']);
+
+        $this->get(route('members.edit', $member))
+            ->assertOk()
+            ->assertSee('name="remove_photo"', false);
+    }
+
+    public function test_admin_can_remove_a_members_photo(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('photos/current.jpg', 'image');
+        $this->actingAs(User::factory()->create());
+        $member = Member::factory()->create(['photo_url' => 'photos/current.jpg']);
+
+        $this->put(route('members.update', $member), [
+            'full_name' => $member->full_name,
+            'phone' => $member->phone,
+            'remove_photo' => '1',
+        ])->assertRedirect(route('members.show', $member));
+
+        $this->assertNull($member->fresh()->photo_url);
+        Storage::disk('public')->assertMissing('photos/current.jpg');
+    }
+
+    public function test_photo_is_kept_when_remove_is_not_checked(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('photos/current.jpg', 'image');
+        $this->actingAs(User::factory()->create());
+        $member = Member::factory()->create(['photo_url' => 'photos/current.jpg']);
+
+        $this->put(route('members.update', $member), [
+            'full_name' => $member->full_name,
+            'phone' => $member->phone,
+        ]);
+
+        $this->assertSame('photos/current.jpg', $member->fresh()->photo_url);
+        Storage::disk('public')->assertExists('photos/current.jpg');
     }
 }

@@ -20,6 +20,7 @@ return [
     'full_name' => 'Имя',
     'phone' => 'Телефон',
     'photo' => 'Фото',
+    'remove_photo' => 'Удалить фото',
     'birth_date' => 'Дата рождения',
     'preferred_time' => 'Удобное время',
     'note' => 'Заметка',

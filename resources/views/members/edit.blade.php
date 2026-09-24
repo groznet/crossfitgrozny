@@ -7,7 +7,7 @@
 
     <form method="POST" action="{{ route('members.update', $member) }}" enctype="multipart/form-data" class="bg-white rounded-xl shadow-sm p-6 space-y-4">
         @method('PUT')
-        @include('members._form')
+        @include('members._form', ['canRemovePhoto' => true])
 
         <div class="flex gap-2 pt-2">
             <button type="submit" class="flex-1 bg-gray-900 text-white rounded-lg py-3 text-base font-medium hover:bg-gray-800">

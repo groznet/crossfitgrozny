@@ -55,11 +55,14 @@ class MemberController extends Controller
 
     public function update(UpdateMemberRequest $request, Member $member, PhotoUploadService $photos): RedirectResponse
     {
-        $data = $request->safe()->except('photo');
+        $data = $request->safe()->except(['photo', 'remove_photo']);
 
         if ($request->hasFile('photo')) {
             $photos->delete($member->photo_url);
             $data['photo_url'] = $photos->store($request->file('photo'));
+        } elseif ($request->boolean('remove_photo')) {
+            $photos->delete($member->photo_url);
+            $data['photo_url'] = null;
         }
 
         $member->update($data);

@@ -97,4 +97,16 @@ class MemberTest extends TestCase
         $this->post(route('members.restore', $member))->assertRedirect(route('members.show', $member));
         $this->assertSame(MemberStatus::Active, $member->fresh()->status);
     }
+
+    public function test_member_page_repairs_a_missing_public_token(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $member = Member::factory()->create();
+        $member->forceFill(['public_token' => null])->saveQuietly();
+
+        $this->get(route('members.show', $member))->assertOk();
+
+        $this->assertNotNull($member->fresh()->public_token);
+    }
 }

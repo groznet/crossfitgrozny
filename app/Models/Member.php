@@ -97,9 +97,16 @@ class Member extends Model
      * The unguessable link a member can use to view their own status —
      * nothing stops them sharing it, but there's no directory listing or
      * other way to discover another member's link.
+     *
+     * Members saved without a token (e.g. seeded with model events off)
+     * get one generated on first use instead of breaking the admin page.
      */
     public function publicUrl(): string
     {
+        if ($this->public_token === null) {
+            $this->forceFill(['public_token' => Str::random(32)])->saveQuietly();
+        }
+
         return route('public.member.show', $this->public_token);
     }
 

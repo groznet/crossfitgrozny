@@ -140,7 +140,7 @@ Before relying on a package's API, confirm its installed version:
 
 ## 1. One-line summary
 
-A mobile-first, Russian-language web app where the CrossFit trainer **Adam** keeps a list of his CrossFit members and sees, at a glance, who has paid, whose subscription is about to expire, and who has lapsed.
+A mobile-first, Russian-language web app where the CrossFit trainer **Magomed** keeps a list of his CrossFit members and sees, at a glance, who has paid, whose subscription is about to expire, and who has lapsed.
 
 ---
 
@@ -149,7 +149,7 @@ A mobile-first, Russian-language web app where the CrossFit trainer **Adam** kee
 ### 2.1 The gym
 - **Grozny Gym** has two zones under one subscription:
   - **Weightlifting hall** — members train alone or with other trainers. **Not part of this app.**
-  - **CrossFit zone** — the CrossFit program led by Adam. **This app is only for this program.**
+  - **CrossFit zone** — the CrossFit program led by Magomed. **This app is only for this program.**
 - The program includes CrossFit, strength, and explosive training.
 - Members may train any day, Monday–Sunday, while their subscription is active.
 
@@ -168,9 +168,9 @@ A mobile-first, Russian-language web app where the CrossFit trainer **Adam** kee
 Most members pay **monthly**. **All prices must be editable by the admin** (see 5.6); these are starting values.
 
 ### 2.3 The problem
-- The front desk and card system know who paid. **Adam does not.**
-- Members are told to tell Adam in person after paying. Many forget.
-- Adam's only member list is a **WhatsApp group**. He removes people he thinks have not paid, which sometimes removes people who did pay.
+- The front desk and card system know who paid. **Magomed does not.**
+- Members are told to tell Magomed in person after paying. Many forget.
+- Magomed's only member list is a **WhatsApp group**. He removes people he thinks have not paid, which sometimes removes people who did pay.
 - Nobody else tracks who is in the CrossFit program.
 
 ### 2.4 Out of scope
@@ -185,27 +185,27 @@ Most members pay **monthly**. **All prices must be editable by the admin** (see 
 
 | Role | Access | What they do |
 |---|---|---|
-| **Admin (Adam)** | Logs in | Manages members, records payments, approves new profiles |
+| **Admin (Magomed)** | Logs in | Manages members, records payments, approves new profiles |
 | **Member** | No login | Fills a public profile form via a link (see 5.3) |
 
 - Only one admin account in the MVP.
-- Adam's contact: **+7 963 989-20-11**. Use it for the admin account setup and as the WhatsApp contact shown to members.
+- Magomed's contact: **+7 963 989-20-11**. Use it for the admin account setup and as the WhatsApp contact shown to members.
 
 ---
 
 ## 4. Core workflow
 
 1. A member pays at the front desk.
-2. The member tells Adam (in person or via WhatsApp).
-3. Adam opens the app and records the payment in a few taps.
+2. The member tells Magomed (in person or via WhatsApp).
+3. Magomed opens the app and records the payment in a few taps.
 4. The app calculates the expiry date and updates the status.
-5. Adam checks the list to decide who stays in the WhatsApp group and who to remind.
+5. Magomed checks the list to decide who stays in the WhatsApp group and who to remind.
 
 New members:
-1. Adam shares a link to the public profile form (e.g. in the WhatsApp group).
+1. Magomed shares a link to the public profile form (e.g. in the WhatsApp group).
 2. The member fills in basic info.
-3. The profile appears in Adam's "New requests" list.
-4. Adam approves it, and it joins the member list.
+3. The profile appears in Magomed's "New requests" list.
+4. Magomed approves it, and it joins the member list.
 
 ---
 
@@ -244,19 +244,19 @@ New members:
   - Per visit: valid for that day only
 - A new payment made before expiry extends from the current expiry date, not from today.
 - Payment history is shown on the member's page.
-- Adam can edit or delete a payment to fix mistakes.
+- Magomed can edit or delete a payment to fix mistakes.
 
 ### 5.3 Public member profile form (no login)
 - Accessible from one shareable link.
 - Fields:
   - Full name (required)
   - Phone / WhatsApp (required)
-  - Photo (optional) — helps Adam recognise who is who
+  - Photo (optional) — helps Magomed recognise who is who
   - Date of birth (optional)
   - Preferred training time: daytime / evening (optional)
   - Short note, e.g. experience level or goals (optional)
-- Submissions go to a **"New requests"** list. They are not shown as members until Adam approves them.
-- Adam can approve, edit, merge with an existing member, or reject a submission.
+- Submissions go to a **"New requests"** list. They are not shown as members until Magomed approves them.
+- Magomed can approve, edit, merge with an existing member, or reject a submission.
 - Add a simple honeypot field against spam. Do not use a captcha.
 - If a phone number already exists, flag it as a possible duplicate.
 
@@ -267,7 +267,7 @@ New members:
 
 ### 5.5 Admin login
 - Simple login for one admin: phone or username with a password.
-- Keep the session long so Adam is not logged out often.
+- Keep the session long so Magomed is not logged out often.
 
 ### 5.6 Settings
 - Admin can edit the price of each plan.
@@ -282,7 +282,7 @@ New members:
 - **Personal records** per member (lifts, benchmark workouts).
 - **Workout leaderboard** for daily workout times.
 - **Expiry reminders** to members via WhatsApp.
-- **Member self-reported payment.** A member presses "I paid" and Adam confirms it.
+- **Member self-reported payment.** A member presses "I paid" and Magomed confirms it.
 - **Card system integration**, if the gym's software allows it.
 - **Export to Google Sheets / CSV** of members and payments, for backups and reporting.
 
@@ -349,7 +349,7 @@ Rules:
 
 - **Interface language: Russian only.** All labels, messages, and dates must be in Russian. Use the Russian date format DD.MM.YYYY.
 - Store all UI strings in one place, so another language can be added later.
-- **Mobile-first.** Adam will use the app on his phone in the gym. Use large tap targets and one-hand-friendly layouts.
+- **Mobile-first.** Magomed will use the app on his phone in the gym. Use large tap targets and one-hand-friendly layouts.
 - **Styling:** light, simple, and readable. No heavy shadows or decorative animations.
 - **Timezone:** Europe/Moscow.
 - **Currency:** RUB, shown as "3 500 ₽".

@@ -1,6 +1,6 @@
 # Grozny Gym — CrossFit Member Tracker
 
-A mobile-first, Russian-language web app for the CrossFit trainer Adam to track
+A mobile-first, Russian-language web app for the CrossFit trainer Magomed to track
 which of his CrossFit-program members have paid, whose subscription is about
 to expire, and who has lapsed. See `CLAUDE.md` in this repository for the full
 product brief.
@@ -34,9 +34,9 @@ directly from a CDN in the Blade layout.
 
 ### Seeded accounts
 
-The seeder creates one admin account for Adam:
+The seeder creates one admin account for Magomed:
 
-- **Login:** `adam` (or phone `+79639892011`)
+- **Login:** `admin` (or phone `+79639892011`)
 - **Password:** printed to the console when you run `php artisan migrate
   --seed` (look for the "Admin account seeded" line), and fixed at
   `50b7fb8d763c` in `database/seeders/AdminUserSeeder.php` for this build.
@@ -45,7 +45,7 @@ There is no change-password screen in this MVP. To set a different password
 later, use `php artisan tinker`:
 
 ```php
-$user = \App\Models\User::where('username', 'adam')->first();
+$user = \App\Models\User::where('username', 'admin')->first();
 $user->update(['password' => \Illuminate\Support\Facades\Hash::make('new-password')]);
 ```
 
@@ -93,12 +93,12 @@ stranger's phone.
 
 Regardless of the SMS-verification setting, the public form always rejects a
 phone number that already has an unreviewed (`pending`) submission waiting
-for Adam — otherwise the same person spamming "submit" would pile up
+for Magomed — otherwise the same person spamming "submit" would pile up
 duplicate entries in his New Requests queue. A phone written as `8 963 ...`
 or `+7 963 ...` is treated as the same number for this check (and
 everywhere else), since `8` is just the domestic dialing prefix for the same
 `+7` country code. This does **not** block a phone that belongs to an
-existing active member — that case is instead surfaced to Adam in New
+existing active member — that case is instead surfaced to Magomed in New
 Requests as a possible duplicate to merge, per section 5.3 of the brief.
 
 ### Math challenge on the public form
@@ -117,13 +117,13 @@ Two more public, no-login pages exist beyond the join form:
 
 - **`/m/{token}`** — a read-only page showing one member's own name, photo,
   and current subscription status, plus a "Написать Магомеду" WhatsApp button
-  (using Adam's own phone number, per section 3 of the brief — this is the
+  (using Magomed's own phone number, per section 3 of the brief — this is the
   first place that number is actually surfaced to a member). There's no
   login and no lookup by name/phone; the only way to reach a specific
   member's page is to already have their link. Every member gets a random,
   unguessable 32-character `public_token` automatically the moment their
   row is created (`Member::booted()`), and `Member::publicUrl()` builds the
-  full link from it. Adam can copy a member's link from their admin page
+  full link from it. Magomed can copy a member's link from their admin page
   (`members.show`) — a "Личная ссылка участника" field with a copy button —
   to send it to them once they're approved. There is deliberately no
   "browse all members and pick one" page anywhere that links out to
@@ -254,7 +254,7 @@ chose the simplest option and records it here:
   for this gym's workflow).
 - **Payments can't be backdated into the future** (`paid_at` must be today or
   earlier).
-- **Adam's login session uses Laravel's "remember me" cookie** rather than a
+- **Magomed's login session uses Laravel's "remember me" cookie** rather than a
   very long `SESSION_LIFETIME`, to satisfy "keep the session long" without
   weakening session expiry for any other reason it might matter.
 - **Member/profile photos are resized and compressed with PHP's built-in GD

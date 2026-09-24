@@ -118,7 +118,7 @@ class PublicProfileTest extends TestCase
     public function test_a_phone_already_used_by_an_active_member_is_not_blocked(): void
     {
         // Only PENDING duplicates are blocked here — an active-member match
-        // is instead surfaced to Adam as a possible duplicate to merge.
+        // is instead surfaced to Magomed as a possible duplicate to merge.
         Member::factory()->create(['phone' => '+79631234567']);
 
         $response = $this->submitProfile([

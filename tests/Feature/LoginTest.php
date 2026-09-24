@@ -19,13 +19,13 @@ class LoginTest extends TestCase
     public function test_admin_can_log_in_with_username(): void
     {
         User::factory()->create([
-            'username' => 'adam',
+            'username' => 'admin',
             'phone' => '+79639892011',
             'password' => Hash::make('secret1234'),
         ]);
 
         $response = $this->post(route('login.store'), [
-            'login' => 'adam',
+            'login' => 'admin',
             'password' => 'secret1234',
         ]);
 
@@ -36,7 +36,7 @@ class LoginTest extends TestCase
     public function test_admin_can_log_in_with_phone(): void
     {
         User::factory()->create([
-            'username' => 'adam',
+            'username' => 'admin',
             'phone' => '+79639892011',
             'password' => Hash::make('secret1234'),
         ]);
@@ -53,12 +53,12 @@ class LoginTest extends TestCase
     public function test_invalid_password_is_rejected(): void
     {
         User::factory()->create([
-            'username' => 'adam',
+            'username' => 'admin',
             'password' => Hash::make('secret1234'),
         ]);
 
         $response = $this->post(route('login.store'), [
-            'login' => 'adam',
+            'login' => 'admin',
             'password' => 'wrong-password',
         ]);
 

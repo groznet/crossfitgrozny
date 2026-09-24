@@ -51,7 +51,7 @@ class MemberPublicProfileTest extends TestCase
         $response->assertNotFound();
     }
 
-    public function test_public_profile_links_to_contact_adam_on_whatsapp(): void
+    public function test_public_profile_links_to_contact_trainer_on_whatsapp(): void
     {
         User::factory()->create(['phone' => '+79639892011']);
         $member = Member::factory()->create();

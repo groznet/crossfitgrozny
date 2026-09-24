@@ -39,7 +39,7 @@
             target="_blank"
             class="block w-full bg-green-600 text-white rounded-lg py-3 text-center text-sm font-medium hover:bg-green-700 mt-6"
         >
-            {{ __('public.contact_adam') }}
+            {{ __('public.contact_trainer') }}
         </a>
     </div>
 

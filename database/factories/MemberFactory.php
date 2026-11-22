@@ -20,7 +20,7 @@ class MemberFactory extends Factory
     public function definition(): array
     {
         return [
-            'full_name' => $this->faker->name(),
+            'full_name' => $this->caucasianName(),
             'phone' => '+7'.$this->faker->numerify('9#########'),
             'photo_url' => null,
             'birth_date' => $this->faker->optional(0.6)->dateTimeBetween('-55 years', '-16 years')?->format('Y-m-d'),
@@ -38,5 +38,24 @@ class MemberFactory extends Factory
     public function archived(): static
     {
         return $this->state(fn () => ['status' => MemberStatus::Archived]);
+    }
+
+    /**
+     * A random Chechen / North Caucasus male name, "Surname First".
+     */
+    private function caucasianName(): string
+    {
+        $surnames = [
+            'Ахмадов', 'Исаев', 'Дудаев', 'Висаев', 'Муцаев', 'Эльмурзаев', 'Тагиров', 'Хасанов',
+            'Алиев', 'Гелаев', 'Хамзатов', 'Магомадов', 'Бекмурзаев', 'Яхъяев', 'Умаров', 'Сулейманов',
+            'Абдулаев', 'Закриев', 'Идрисов', 'Джабраилов', 'Батаев', 'Албаков', 'Басаев', 'Мусаев',
+        ];
+        $maleNames = [
+            'Адлан', 'Ахмед', 'Магомед', 'Исмаил', 'Руслан', 'Хусейн', 'Салман', 'Умар',
+            'Аслан', 'Беслан', 'Зелимхан', 'Тимур', 'Муса', 'Идрис', 'Рамзан', 'Ильяс',
+            'Хасан', 'Лечи', 'Тамерлан', 'Эльдар', 'Мансур', 'Арби', 'Султан', 'Шамиль',
+        ];
+
+        return $this->faker->randomElement($surnames).' '.$this->faker->randomElement($maleNames);
     }
 }

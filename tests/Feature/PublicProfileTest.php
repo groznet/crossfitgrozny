@@ -41,6 +41,13 @@ class PublicProfileTest extends TestCase
 
     // -- Default behaviour: SMS verification switched off --------------
 
+    public function test_join_form_asks_for_a_whatsapp_number(): void
+    {
+        $this->get(route('public.profile.create'))
+            ->assertOk()
+            ->assertSee(__('members.phone_hint'));
+    }
+
     public function test_visitor_can_submit_a_profile_request_directly(): void
     {
         $response = $this->submitProfile([

@@ -15,7 +15,7 @@
             <input type="text" name="company" id="company" tabindex="-1" autocomplete="off">
         </div>
 
-        @include('members._form')
+        @include('members._form', ['showPhoneHint' => true])
 
         <div>
             <label for="captcha_answer" class="block text-sm font-medium mb-1">

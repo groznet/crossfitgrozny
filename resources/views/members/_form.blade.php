@@ -25,6 +25,10 @@
     >
     @error('phone')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+    @else
+        @if ($showPhoneHint ?? false)
+            <p class="mt-1 text-xs text-gray-500">{{ __('members.phone_hint') }}</p>
+        @endif
     @enderror
 </div>
 

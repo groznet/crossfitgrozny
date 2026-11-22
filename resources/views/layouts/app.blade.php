@@ -28,6 +28,15 @@
                         @endif
                     </a>
                 @endif
+                @if (Route::has('receipts.index'))
+                    @php($receiptCount = \App\Models\PaymentReceipt::where('status', \App\Enums\ReceiptStatus::Pending)->count())
+                    <a href="{{ route('receipts.index') }}" class="text-gray-600 hover:text-gray-900">
+                        {{ __('app.nav_receipts') }}
+                        @if ($receiptCount > 0)
+                            <span class="ml-1 inline-flex items-center justify-center text-xs bg-red-600 text-white rounded-full w-5 h-5">{{ $receiptCount }}</span>
+                        @endif
+                    </a>
+                @endif
                 @if (Route::has('settings.prices.edit'))
                     <a href="{{ route('settings.prices.edit') }}" class="text-gray-600 hover:text-gray-900">
                         {{ __('app.nav_settings') }}

@@ -101,6 +101,15 @@ everywhere else), since `8` is just the domestic dialing prefix for the same
 existing active member — that case is instead surfaced to Magomed in New
 Requests as a possible duplicate to merge, per section 5.3 of the brief.
 
+### Checking a request's phone via WhatsApp
+
+Since the SMS code is switched off, Magomed can confirm a new request is
+genuine himself: each request on **Новые заявки** (and the approval page) has
+a green **«Проверить в WhatsApp»** button next to the phone number. It opens a
+chat with the applicant with a prefilled Russian message ("is it really you
+who asked to join?"). The message is editable before sending, and the app
+can't see whether they reply — Magomed approves once they confirm.
+
 ### Math challenge on the public form
 
 The public form also shows a plain-text arithmetic question (e.g. "сколько
@@ -146,6 +155,32 @@ Two more public, no-login pages exist beyond the join form:
   letters, digits, `_`; 3–30 characters; not all digits so it can't clash
   with an id; unique, case-insensitive). Once a username is set, `/u/{id}`
   redirects to it. Only active members have a public profile.
+
+### Paying by bank transfer with a receipt (no payment gateway)
+
+Payments are never processed online. The flow is manual end to end:
+
+1. Magomed sets the **transfer details** (phone/card number, bank, recipient
+   name) under *Настройки → Реквизиты для перевода*. Until a phone/card
+   number is set, members don't see any payment block. `PaymentDetailsSeeder`
+   pre-fills the phone with Magomed's number on a fresh database and never
+   overwrites an existing value.
+2. An active member opens their private `/m/{token}` page, sees the details
+   and the amount for the plan they pick, transfers the money in their own
+   banking app, and uploads the receipt (JPG/PNG/WEBP/PDF, up to 8 MB). Only
+   one receipt per member can wait for review at a time.
+3. The receipt appears in Magomed's **Чеки** page (the nav shows a red badge
+   with the pending count). Receipt files are stored on the **private**
+   `local` disk (`storage/app/private/receipts`), not `storage/app/public`,
+   and are served only through the logged-in admin route
+   `receipts.file` — they are never reachable by a public URL.
+4. Magomed **confirms** (records a normal payment dated today, using the
+   same expiry rules as manual entry; he can edit it afterwards) or
+   **rejects** the receipt. The member's status updates as soon as the
+   payment exists.
+
+Manual recording from a member's admin page still works for desk/cash
+payments.
 
 ## Running tests
 
@@ -204,7 +239,10 @@ check the hosting panel's PHP extension list if uploads ever fail).
    php artisan migrate --force
    php artisan db:seed --class=AdminUserSeeder --force
    php artisan db:seed --class=PlanPriceSeeder --force
+   php artisan db:seed --class=PaymentDetailsSeeder --force
    ```
+   (`PaymentDetailsSeeder` only pre-fills the transfer phone; set the real
+   card/phone, bank and recipient name in *Настройки* after logging in.)
    (Skip `MemberDemoSeeder` in production — it's only for local visual
    testing.)
 6. Link storage so uploaded member photos are servable:
@@ -254,6 +292,14 @@ chose the simplest option and records it here:
   for this gym's workflow).
 - **Payments can't be backdated into the future** (`paid_at` must be today or
   earlier).
+- **The amount on a receipt is fixed from the current plan price when the
+  member submits it**; members can't type their own amount. A confirmed
+  receipt always becomes a payment dated **today** (the confirmation day),
+  not the transfer date; Magomed can edit the payment if that differs.
+- **Receipts are kept as submitted** (not resized, since PDFs are allowed)
+  and are never deleted automatically, including rejected ones.
+- **Transfer details live in a small `settings` key/value table** so Magomed
+  can edit them in the app without touching `.env` or code.
 - **Magomed's login session uses Laravel's "remember me" cookie** rather than a
   very long `SESSION_LIFETIME`, to satisfy "keep the session long" without
   weakening session expiry for any other reason it might matter.

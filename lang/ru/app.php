@@ -5,6 +5,7 @@ return [
 
     'nav_members' => 'Участники',
     'nav_requests' => 'Новые заявки',
+    'nav_receipts' => 'Чеки',
     'nav_settings' => 'Настройки',
     'nav_community' => 'Сообщество',
     'nav_join' => 'Записаться',

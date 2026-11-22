@@ -26,6 +26,18 @@ class NewRequestTest extends TestCase
         });
     }
 
+    public function test_requests_offer_a_whatsapp_check_with_a_prefilled_message(): void
+    {
+        $this->actingAs(User::factory()->create());
+        $pending = Member::factory()->pending()->create(['full_name' => 'Иван Петров', 'phone' => '+79631234567']);
+
+        $expectedUrl = 'https://wa.me/79631234567?text='.rawurlencode(__('requests.whatsapp_verify_message', ['name' => 'Иван Петров']));
+
+        $this->assertSame($expectedUrl, $pending->verificationWhatsappUrl());
+        $this->get(route('requests.index'))->assertOk()->assertSee($expectedUrl, false);
+        $this->get(route('requests.edit', $pending))->assertOk()->assertSee($expectedUrl, false);
+    }
+
     public function test_admin_can_approve_a_pending_member(): void
     {
         $this->actingAs(User::factory()->create());

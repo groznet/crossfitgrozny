@@ -50,6 +50,11 @@ class Member extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function paymentReceipts(): HasMany
+    {
+        return $this->hasMany(PaymentReceipt::class);
+    }
+
     public function latestPayment(): HasOne
     {
         return $this->hasOne(Payment::class)->latestOfMany(['paid_at', 'id']);
@@ -88,9 +93,17 @@ class Member extends Model
         });
     }
 
-    public function whatsappUrl(): string
+    public function whatsappUrl(?string $message = null): string
     {
-        return PhoneNumber::toWhatsAppUrl($this->phone);
+        return PhoneNumber::toWhatsAppUrl($this->phone, $message);
+    }
+
+    /**
+     * A WhatsApp link that asks a join-request applicant to confirm it's really them.
+     */
+    public function verificationWhatsappUrl(): string
+    {
+        return $this->whatsappUrl(__('requests.whatsapp_verify_message', ['name' => $this->full_name]));
     }
 
     /**

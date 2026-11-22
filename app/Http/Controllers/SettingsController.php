@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdatePlanPricesRequest;
 use App\Models\PlanPrice;
+use App\Models\Setting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -13,7 +14,9 @@ class SettingsController extends Controller
     {
         $prices = PlanPrice::pluck('price', 'plan');
 
-        return view('settings.prices', compact('prices'));
+        $details = Setting::whereIn('key', ['payment_phone', 'payment_bank', 'payment_recipient'])->pluck('value', 'key');
+
+        return view('settings.prices', compact('prices', 'details'));
     }
 
     public function update(UpdatePlanPricesRequest $request): RedirectResponse

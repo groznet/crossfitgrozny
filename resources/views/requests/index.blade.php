@@ -20,6 +20,10 @@
                         <div class="font-medium truncate">{{ $member->full_name }}</div>
                         <div class="text-sm text-gray-500 truncate">{{ $member->phone }}</div>
                     </div>
+                    <a href="{{ $member->verificationWhatsappUrl() }}" target="_blank" rel="noopener" class="shrink-0 bg-green-600 text-white rounded-lg px-3 py-2 text-xs font-medium hover:bg-green-700">
+                        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                        {{ __('requests.whatsapp_verify') }}
+                    </a>
                 </div>
 
                 @if ($member->duplicateOf)

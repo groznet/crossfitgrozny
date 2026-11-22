@@ -4,10 +4,13 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\NewRequestController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentDetailsController;
 use App\Http\Controllers\Public\CommunityController;
 use App\Http\Controllers\Public\MemberProfileController;
+use App\Http\Controllers\Public\PaymentReceiptController;
 use App\Http\Controllers\Public\ProfileRequestController;
 use App\Http\Controllers\Public\PublicProfileController;
+use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +21,9 @@ Route::get('/m/{member:public_token}', [MemberProfileController::class, 'show'])
 Route::post('/m/{member:public_token}/username', [PublicProfileController::class, 'updateUsername'])
     ->middleware('throttle:10,1')
     ->name('public.member.username');
+Route::post('/m/{member:public_token}/receipts', [PaymentReceiptController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('public.member.receipts.store');
 Route::get('/u/{handle}', [PublicProfileController::class, 'show'])->name('public.profile.show');
 
 Route::get('/profile', [ProfileRequestController::class, 'create'])->name('public.profile.create');
@@ -53,6 +59,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/payments/{payment}', [PaymentController::class, 'update'])->name('payments.update');
     Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 
+    Route::get('/receipts', [ReceiptController::class, 'index'])->name('receipts.index');
+    Route::get('/receipts/{receipt}/file', [ReceiptController::class, 'file'])->name('receipts.file');
+    Route::post('/receipts/{receipt}/confirm', [ReceiptController::class, 'confirm'])->name('receipts.confirm');
+    Route::post('/receipts/{receipt}/reject', [ReceiptController::class, 'reject'])->name('receipts.reject');
+
     Route::get('/requests', [NewRequestController::class, 'index'])->name('requests.index');
     Route::get('/requests/{member}/edit', [NewRequestController::class, 'edit'])->name('requests.edit');
     Route::put('/requests/{member}', [NewRequestController::class, 'approve'])->name('requests.approve');
@@ -62,4 +73,5 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/settings/prices', [SettingsController::class, 'edit'])->name('settings.prices.edit');
     Route::put('/settings/prices', [SettingsController::class, 'update'])->name('settings.prices.update');
+    Route::put('/settings/payment-details', [PaymentDetailsController::class, 'update'])->name('settings.payment-details.update');
 });

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Member;
+use App\Models\PlanPrice;
+use App\Models\Setting;
 use App\Models\User;
 use App\Support\PhoneNumber;
 use Illuminate\View\View;
@@ -18,6 +20,14 @@ class MemberProfileController extends Controller
     {
         $adminWhatsappUrl = PhoneNumber::toWhatsAppUrl(User::first()->phone);
 
-        return view('public.member-profile', compact('member', 'adminWhatsappUrl'));
+        $paymentDetails = [
+            'phone' => Setting::getValue('payment_phone'),
+            'bank' => Setting::getValue('payment_bank'),
+            'recipient' => Setting::getValue('payment_recipient'),
+        ];
+        $prices = PlanPrice::pluck('price', 'plan');
+        $latestReceipt = $member->paymentReceipts()->latest('id')->first();
+
+        return view('public.member-profile', compact('member', 'adminWhatsappUrl', 'paymentDetails', 'prices', 'latestReceipt'));
     }
 }

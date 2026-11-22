@@ -176,7 +176,7 @@ Most members pay **monthly**. **All prices must be editable by the admin** (see 
 ### 2.4 Out of scope
 - The daily workout program. It is written on a board in the gym and works fine.
 - Weightlifting-only members.
-- Online payments.
+- Online payment gateways and any automated payment processing. Payments are only ever verified and registered manually by the admin (see 5.7).
 - Integration with the door/card system. The app must work fully on its own, with no dependency on the gym's card software.
 
 ---
@@ -259,6 +259,7 @@ New members:
 - Magomed can approve, edit, merge with an existing member, or reject a submission.
 - Add a simple honeypot field against spam. Do not use a captcha.
 - If a phone number already exists, flag it as a possible duplicate.
+- Each request has a **WhatsApp check** button next to the phone number, opening a chat with a prefilled message asking the applicant to confirm they sent the request. Magomed approves after they confirm.
 
 ### 5.4 Member page (admin)
 - Profile info, payment history, current status.
@@ -273,6 +274,18 @@ New members:
 - Admin can edit the price of each plan.
 - A price change applies only to **new** payments. Past payments keep the amount they were recorded with.
 - Default prices (seed values): visit 400, monthly daytime 2,500, monthly evening 3,500, yearly 25,000 (RUB).
+- Admin also edits the **transfer details** (phone/card number, bank, recipient name) shown to members in 5.7.
+
+### 5.7 Bank-transfer payments with receipt (manual)
+No payment gateway. The member pays by transferring money to the owner's bank card/phone and proves it with a receipt; Magomed verifies it by hand.
+1. On their private `/m/{token}` page, an **active** member sees the transfer details (phone/card number, bank, recipient) and picks a plan; the amount is the current plan price. The block is hidden until a transfer phone is set in Settings.
+2. The member transfers the money in their own banking app, then uploads the receipt (JPG/PNG/WEBP/PDF, up to 8 MB) on the same page. Only one receipt can be pending per member at a time.
+3. The receipt goes to the admin's **"Чеки"** queue (nav badge shows the pending count). Receipt files are stored on the **private** disk and served only to the logged-in admin.
+4. Admin opens the receipt, then **confirms** or **rejects** it.
+   - Confirm records a normal `Payment` (plan and amount from the receipt, `paid_at` = today) via the same `PaymentService` as manual entry, so expiry rules are identical. The admin can edit that payment afterwards.
+   - Reject leaves no payment; the member sees a "receipt rejected" notice and can contact Magomed or submit again.
+5. Once confirmed, the member's status updates automatically (computed from the latest payment, as before).
+- Nothing is recorded as a payment until the admin confirms. Recording a payment manually (5.2) still works for cash/desk payments.
 
 ---
 
@@ -282,7 +295,6 @@ New members:
 - **Personal records** per member (lifts, benchmark workouts).
 - **Workout leaderboard** for daily workout times.
 - **Expiry reminders** to members via WhatsApp.
-- **Member self-reported payment.** A member presses "I paid" and Magomed confirms it.
 - **Card system integration**, if the gym's software allows it.
 - **Export to Google Sheets / CSV** of members and payments, for backups and reporting.
 
@@ -315,6 +327,21 @@ PlanPrice (editable by admin)
   plan               enum: visit | month_day | month_evening | year
   price              integer (RUB)
   updated_at
+
+PaymentReceipt (member-submitted proof of a bank transfer, reviewed by admin)
+  id
+  member_id          FK -> Member
+  plan               enum: visit | month_day | month_evening | year
+  amount             integer (RUB)   -- plan price at submission time
+  file_path          string          -- private disk, receipts/
+  status             enum: pending | confirmed | rejected
+  payment_id         FK -> Payment, nullable   -- set when confirmed
+  reviewed_at        timestamp, nullable
+  created_at, updated_at
+
+Setting (key/value; transfer details: payment_phone, payment_bank, payment_recipient)
+  key                string, primary
+  value              text, nullable
 ```
 
 Subscription status (active / expiring / expired / none) is **computed** from the latest `Payment.valid_until`. It is not stored.

@@ -18,8 +18,13 @@ class PhoneNumber
         return '+'.$digits;
     }
 
-    public static function toWhatsAppUrl(string $phone): string
+    /**
+     * A wa.me chat link, optionally with a prefilled message the sender can edit before sending.
+     */
+    public static function toWhatsAppUrl(string $phone, ?string $message = null): string
     {
-        return 'https://wa.me/'.preg_replace('/\D/', '', $phone);
+        $url = 'https://wa.me/'.preg_replace('/\D/', '', $phone);
+
+        return $message === null ? $url : $url.'?text='.rawurlencode($message);
     }
 }

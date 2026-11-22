@@ -3,7 +3,14 @@
 @section('title', __('requests.approve_title'))
 
 @section('content')
-    <h1 class="text-xl font-semibold mb-4">{{ __('requests.approve_title') }}</h1>
+    <h1 class="text-xl font-semibold mb-2">{{ __('requests.approve_title') }}</h1>
+    <p class="text-sm text-gray-600 mb-4">
+        {{ $member->phone }}
+        <a href="{{ $member->verificationWhatsappUrl() }}" target="_blank" rel="noopener" class="inline-block ml-2 bg-green-600 text-white rounded-lg px-3 py-1.5 text-xs font-medium hover:bg-green-700">
+            <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+            {{ __('requests.whatsapp_verify') }}
+        </a>
+    </p>
 
     <form method="POST" action="{{ route('requests.approve', $member) }}" enctype="multipart/form-data" class="bg-white rounded-xl shadow-sm p-6 space-y-4">
         @method('PUT')
